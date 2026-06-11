@@ -29,21 +29,28 @@ Then register the public key with each service that needs it:
 
 ### PGP keys
 
-These are needed for gopass (password store encryption/decryption).
+The bootstrap will import PGP keys automatically if it finds the following files in `$HOME`:
+
+| File | Purpose |
+|------|---------|
+| `~/pgp-personal.asc` | Personal key |
+| `~/pgp-gopass.asc` | gopass store encryption |
+| `~/pgp-work.asc` | Work git commit signing |
+
+If a key is already in the GPG keyring the file is not needed. If a key is absent from both the keyring and `$HOME`, the bootstrap fails with a clear message.
 
 **Export from source machine:**
 ```bash
-gpg --list-secret-keys --keyid-format LONG  # note your KEY_ID
-gpg --export-secret-keys --armor KEY_ID > pgp-private.asc
-# Transfer pgp-private.asc securely to the target machine
+gpg --list-secret-keys --keyid-format LONG  # note each KEY_ID
+gpg --export-secret-keys --armor KEY_ID > ~/pgp-personal.asc
+gpg --export-secret-keys --armor KEY_ID > ~/pgp-gopass.asc
+gpg --export-secret-keys --armor KEY_ID > ~/pgp-work.asc
+# Transfer the .asc files securely to $HOME on the target machine
 ```
 
-**Install on target machine:**
+After the bootstrap imports the keys, remove the files:
 ```bash
-gpg --import pgp-private.asc
-gpg --edit-key KEY_ID
-# At the gpg> prompt: trust → 5 (ultimate) → y → quit
-rm pgp-private.asc  # don't leave the private key lying around
+rm ~/pgp-personal.asc ~/pgp-gopass.asc ~/pgp-work.asc
 ```
 
 ## What the bootstrap does

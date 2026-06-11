@@ -42,28 +42,45 @@ bootstrap_repo() {
 
 # ── prerequisites ─────────────────────────────────────────────────────────────
 check_prerequisites() {
-    local missing=0
-
     if ! find ~/.ssh -maxdepth 1 -type f ! -name '*.pub' ! -name 'known_hosts' \
             ! -name 'config' ! -name 'authorized_keys' 2>/dev/null | grep -q .; then
         error "No SSH private key found in ~/.ssh/"
         error "  See README: Manual prerequisites → SSH keys"
-        missing=1
-    else
-        info "SSH keys present"
-    fi
-
-    if ! gpg --list-secret-keys 2>/dev/null | grep -q 'sec'; then
-        error "No PGP secret keys found in GPG keyring"
-        error "  See README: Manual prerequisites → PGP keys"
-        missing=1
-    else
-        info "PGP keys present"
-    fi
-
-    if [[ $missing -ne 0 ]]; then
         fatal "Prerequisites missing — fix the above and re-run. See README for instructions."
     fi
+    info "SSH keys present"
+}
+
+# ── pgp keys ──────────────────────────────────────────────────────────────────
+# For each key: already in keyring → skip; .asc file in $HOME → import; neither → fail.
+import_pgp_key() {
+    local label="$1"
+    local fingerprint="$2"
+    local asc_path="$HOME/$3"
+
+    if gpg --list-secret-keys "$fingerprint" &>/dev/null; then
+        info "PGP key already present: $label"
+        return 0
+    fi
+    if [[ -f "$asc_path" ]]; then
+        info "Importing PGP key: $label"
+        gpg --import "$asc_path"
+        info "Imported PGP key: $label"
+        return 0
+    fi
+    error "PGP key missing: $label"
+    error "  Fingerprint : $fingerprint"
+    error "  Expected at : $asc_path"
+    error "  See README: Manual prerequisites → PGP keys"
+    return 1
+}
+
+step_pgp_keys() {
+    local missing=0
+    import_pgp_key "personal" "F51B3A7E1E79875F1864571241A814B96CFD3884" "pgp-personal.asc" || missing=1
+    import_pgp_key "gopass"   "E4812F1C637B277FA36763CB054A047E308D74B8" "pgp-gopass.asc"   || missing=1
+    import_pgp_key "work"     "EBB96BF5073E54C97ED790B1427108BFAC790563" "pgp-work.asc"     || missing=1
+    [[ $missing -eq 0 ]] || fatal "One or more PGP keys could not be resolved — see above."
 }
 
 # ── theme ─────────────────────────────────────────────────────────────────────
@@ -97,6 +114,7 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     trap cleanup EXIT
     bootstrap_repo
     check_prerequisites
+    step_pgp_keys
     step_theme
     step_background
 fi
