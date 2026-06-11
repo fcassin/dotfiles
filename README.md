@@ -53,3 +53,25 @@ gpg --export-secret-keys --armor KEY_ID > ~/pgp-work.asc
 - Checks SSH and PGP keys are present (fails with instructions if not)
 - Sets the Catppuccin theme via `omarchy-theme-set`
 - Sets the desktop background
+- Stows all packages (`bash`, `hypr`, `nvim`, `waybar`) into `$HOME`
+
+## Post-bootstrap steps
+
+### SSH agent
+
+The `.bashrc` starts `ssh-agent` automatically on first terminal open and adds `~/.ssh/id_ed25519`. This is required for Docker Compose SSH forwarding and gopass team stores.
+
+### gopass team store
+
+```bash
+gopass clone git@github.com:PlakarKorp/team-secrets.git team-secrets
+```
+
+## Stow packages
+
+| Package | What it manages |
+|---------|----------------|
+| `bash` | `~/.bashrc` — nvm, pnpm, ssh-agent |
+| `hypr` | Hyprland WM config |
+| `nvim` | Neovim / LazyVim config |
+| `waybar` | Status bar config |
