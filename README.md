@@ -31,11 +31,11 @@ Then register the public key with each service that needs it:
 
 The bootstrap will import PGP keys automatically if it finds the following files in `$HOME`:
 
-| File | Purpose |
-|------|---------|
-| `~/pgp-personal.asc` | Personal key |
-| `~/pgp-gopass.asc` | gopass store encryption |
-| `~/pgp-work.asc` | Work git commit signing |
+| File                  | Purpose                |
+|-----------------------|------------------------|
+| `~/pgp-personal.asc`  | Personal key           |
+| `~/pgp-gopass.asc`    | gopass store encryption|
+| `~/pgp-work.asc`      | Work git commit signing|
 
 If a key is already in the GPG keyring the file is not needed. If a key is absent from both the keyring and `$HOME`, the bootstrap fails with a clear message. The `.asc` files are securely deleted with `shred` immediately after import.
 
@@ -69,9 +69,9 @@ gopass clone git@github.com:PlakarKorp/team-secrets.git team-secrets
 
 ## Stow packages
 
-| Package | What it manages |
-|---------|----------------|
-| `bash` | `~/.bashrc` — nvm, pnpm, ssh-agent |
-| `hypr` | Hyprland WM config |
-| `nvim` | Neovim / LazyVim config |
-| `waybar` | Status bar config |
+| Package   | What it manages                     |
+|-----------|-------------------------------------|
+| `bash`    | `~/.bashrc` — nvm, pnpm, ssh-agent |
+| `hypr`    | Hyprland WM config                  |
+| `nvim`    | Neovim / LazyVim config             |
+| `waybar`  | Status bar config                   |
