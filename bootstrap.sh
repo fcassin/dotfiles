@@ -155,6 +155,15 @@ step_background() {
     omarchy-theme-bg-set "$desired_bg"
 }
 
+# ── discord ───────────────────────────────────────────────────────────────────
+step_discord() {
+    if [[ -x "/opt/Discord/discord" ]]; then
+        info "Discord already installed"
+        return
+    fi
+    "$DOTFILES_DIR/discord-update.sh"
+}
+
 # ── neovim plugins ────────────────────────────────────────────────────────────
 step_nvim_plugins() {
     info "Syncing Neovim plugins..."
@@ -170,5 +179,6 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     step_theme
     step_background
     step_stow
+    step_discord
     step_nvim_plugins
 fi
