@@ -57,7 +57,6 @@ bootstrap_repo() {
         exec "$DOTFILES_DIR/bootstrap.sh"
     fi
     cd "$DOTFILES_DIR"
-    info "Dotfiles repo ready at $DOTFILES_DIR"
 }
 
 # ── prerequisites ─────────────────────────────────────────────────────────────
@@ -68,7 +67,6 @@ check_prerequisites() {
         error "  See README: Manual prerequisites → SSH keys"
         fatal "Prerequisites missing — fix the above and re-run. See README for instructions."
     fi
-    info "SSH keys present"
 }
 
 # ── pgp keys ──────────────────────────────────────────────────────────────────
@@ -85,7 +83,6 @@ import_pgp_key() {
     if [[ -f "$asc_path" ]]; then
         info "Importing PGP key: $label"
         gpg --import "$asc_path"
-        info "Imported PGP key: $label"
         return 0
     fi
     error "PGP key missing: $label"
@@ -113,7 +110,6 @@ step_packages() {
         else
             info "Installing package: $pkg"
             sudo pacman -S --needed --noconfirm "$pkg"
-            info "Installed: $pkg"
         fi
     done < "$DOTFILES_DIR/packages.txt"
 }
@@ -143,7 +139,6 @@ step_theme() {
     fi
     info "Setting theme: $DESIRED_THEME"
     omarchy-theme-set "$DESIRED_THEME"
-    info "Theme set to $DESIRED_THEME"
 }
 
 # ── background ────────────────────────────────────────────────────────────────
@@ -157,14 +152,12 @@ step_background() {
     fi
     info "Setting background..."
     omarchy-theme-bg-set "$desired_bg"
-    info "Background set to $desired_bg"
 }
 
 # ── neovim plugins ────────────────────────────────────────────────────────────
 step_nvim_plugins() {
     info "Syncing Neovim plugins..."
-    nvim --headless "+Lazy! sync" +qa
-    info "Neovim plugins synced"
+    nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1
 }
 
 if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
