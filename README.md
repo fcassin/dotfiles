@@ -53,7 +53,8 @@ gpg --export-secret-keys --armor KEY_ID > ~/pgp-work.asc
 - Checks SSH and PGP keys are present (fails with instructions if not)
 - Sets the Catppuccin theme via `omarchy-theme-set`
 - Sets the desktop background
-- Stows all packages (`bash`, `hypr`, `nvim`, `waybar`) into `$HOME`
+- Stows all packages into their respective target directories
+- Clones `~/personal` and symlinks `~/.claude/projects/` into it
 
 ## Post-bootstrap steps
 
@@ -69,9 +70,12 @@ gopass clone git@github.com:PlakarKorp/team-secrets.git team-secrets
 
 ## Stow packages
 
-| Package   | What it manages                     |
-|-----------|-------------------------------------|
-| `bash`    | `~/.bashrc` — nvm, pnpm, ssh-agent |
-| `hypr`    | Hyprland WM config                  |
-| `nvim`    | Neovim / LazyVim config             |
-| `waybar`  | Status bar config                   |
+Each package is stowed directly into its target — no nested `.config/` paths in the repo.
+
+| Package   | Target               | What it manages                      |
+|-----------|----------------------|--------------------------------------|
+| `bash`    | `~/`                 | `.bashrc` — nvm, pnpm, ssh-agent     |
+| `claude`  | `~/.claude/`         | `settings.json` — theme, hooks       |
+| `hypr`    | `~/.config/hypr/`    | Hyprland WM config                   |
+| `nvim`    | `~/.config/nvim/`    | Neovim / LazyVim config              |
+| `waybar`  | `~/.config/waybar/`  | Status bar config                    |
