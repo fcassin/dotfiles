@@ -39,11 +39,11 @@ readonly STOW_PACKAGES=(
 
 cleanup() {
     if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
-        info "Reloading Hyprland..."
+        info "Reloading hyprland..."
         hyprctl reload >/dev/null
         info "Restarting hypridle..."
         pkill hypridle 2>/dev/null || true
-        hypridle &
+        hypridle >/dev/null 2>&1 &
     fi
 }
 
@@ -129,7 +129,6 @@ step_stow() {
             backup "$target"
         done < <(find "$DOTFILES_DIR/$pkg" -type f)
         stow -d "$DOTFILES_DIR" -t "$HOME" --restow "$pkg"
-        info "Stowed: $pkg"
     done
 }
 
