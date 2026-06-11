@@ -180,15 +180,15 @@ step_personal() {
         info "Personal repo already cloned"
     fi
 
-    local memory_dir="$HOME/.claude/projects/-home-francois-dotfiles/memory"
-    local memory_target="$PERSONAL_DIR/claude-memory"
-    if [[ -L "$memory_dir" && "$(readlink "$memory_dir")" == "$memory_target" ]]; then
-        info "Claude memory symlink already set"
+    local projects_dir="$HOME/.claude/projects"
+    local projects_target="$PERSONAL_DIR/claude-memory"
+    if [[ -L "$projects_dir" && "$(readlink "$projects_dir")" == "$projects_target" ]]; then
+        info "Claude projects symlink already set"
     else
-        info "Linking Claude memory..."
-        backup "$memory_dir"
-        mkdir -p "$(dirname "$memory_dir")"
-        ln -sfn "$memory_target" "$memory_dir"
+        info "Linking Claude projects..."
+        backup "$projects_dir"
+        mkdir -p "$(dirname "$projects_dir")"
+        ln -sfn "$projects_target" "$projects_dir"
     fi
 }
 
