@@ -35,6 +35,7 @@ readonly DESIRED_THEME="catppuccin"
 # Stow packages to symlink into $HOME. Each name must match a directory in $DOTFILES_DIR.
 readonly STOW_PACKAGES=(
     hypr
+    nvim
 )
 
 cleanup() {
