@@ -83,6 +83,7 @@ import_pgp_key() {
     if [[ -f "$asc_path" ]]; then
         info "Importing PGP key: $label"
         gpg --import "$asc_path"
+        shred -u "$asc_path"
         return 0
     fi
     error "PGP key missing: $label"

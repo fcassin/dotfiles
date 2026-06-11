@@ -37,7 +37,7 @@ The bootstrap will import PGP keys automatically if it finds the following files
 | `~/pgp-gopass.asc` | gopass store encryption |
 | `~/pgp-work.asc` | Work git commit signing |
 
-If a key is already in the GPG keyring the file is not needed. If a key is absent from both the keyring and `$HOME`, the bootstrap fails with a clear message.
+If a key is already in the GPG keyring the file is not needed. If a key is absent from both the keyring and `$HOME`, the bootstrap fails with a clear message. The `.asc` files are securely deleted with `shred` immediately after import.
 
 **Export from source machine:**
 ```bash
@@ -46,11 +46,6 @@ gpg --export-secret-keys --armor KEY_ID > ~/pgp-personal.asc
 gpg --export-secret-keys --armor KEY_ID > ~/pgp-gopass.asc
 gpg --export-secret-keys --armor KEY_ID > ~/pgp-work.asc
 # Transfer the .asc files securely to $HOME on the target machine
-```
-
-After the bootstrap imports the keys, remove the files:
-```bash
-rm ~/pgp-personal.asc ~/pgp-gopass.asc ~/pgp-work.asc
 ```
 
 ## What the bootstrap does
