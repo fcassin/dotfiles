@@ -20,12 +20,28 @@ warning() { echo "[WARNING] $*" | tee -a "$LOG_FILE" >&2 ; }
 error()   { echo "[ERROR]   $*" | tee -a "$LOG_FILE" >&2 ; }
 fatal()   { echo "[FATAL]   $*" | tee -a "$LOG_FILE" >&2 ; exit 1 ; }
 
+backup() {
+    local target="$1"
+    if [[ -e "$target" && ! -L "$target" ]]; then
+        warning "Backing up: $target → $target.old"
+        mv "$target" "$target.old"
+    fi
+}
+
 readonly DOTFILES_REPO="https://github.com/fcassin/dotfiles.git"
 readonly DOTFILES_DIR="$HOME/dotfiles"
 readonly DESIRED_THEME="catppuccin"
 
+# Stow packages to symlink into $HOME. Each name must match a directory in $DOTFILES_DIR.
+readonly STOW_PACKAGES=(
+    hypr
+)
+
 cleanup() {
-    :
+    if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+        info "Reloading Hyprland..."
+        hyprctl reload >/dev/null
+    fi
 }
 
 # ── self-bootstrap ────────────────────────────────────────────────────────────
@@ -83,6 +99,37 @@ step_pgp_keys() {
     [[ $missing -eq 0 ]] || fatal "One or more PGP keys could not be resolved — see above."
 }
 
+# ── packages ─────────────────────────────────────────────────────────────────
+step_packages() {
+    local pkg
+    while IFS= read -r pkg || [[ -n "$pkg" ]]; do
+        [[ -z "$pkg" || "$pkg" == \#* ]] && continue
+        if pacman -Q "$pkg" &>/dev/null; then
+            info "Package already installed: $pkg"
+        else
+            info "Installing package: $pkg"
+            sudo pacman -S --needed --noconfirm "$pkg"
+            info "Installed: $pkg"
+        fi
+    done < "$DOTFILES_DIR/packages.txt"
+}
+
+# ── stow ──────────────────────────────────────────────────────────────────────
+step_stow() {
+    local pkg src rel target
+    for pkg in "${STOW_PACKAGES[@]}"; do
+        info "Stowing: $pkg"
+        # Before stowing, move any conflicting regular files to .old so nothing is lost.
+        while IFS= read -r src; do
+            rel="${src#"$DOTFILES_DIR/$pkg/"}"
+            target="$HOME/$rel"
+            backup "$target"
+        done < <(find "$DOTFILES_DIR/$pkg" -type f)
+        stow -d "$DOTFILES_DIR" -t "$HOME" --restow "$pkg"
+        info "Stowed: $pkg"
+    done
+}
+
 # ── theme ─────────────────────────────────────────────────────────────────────
 step_theme() {
     local current
@@ -114,7 +161,9 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     trap cleanup EXIT
     bootstrap_repo
     check_prerequisites
+    step_packages
     step_pgp_keys
+    step_stow
     step_theme
     step_background
 fi
