@@ -1,0 +1,25 @@
+{
+  "theme": "dark",
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "WebFetch",
+      "WebSearch"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/personal/sync",
+            "statusMessage": "Syncing personal notes...",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

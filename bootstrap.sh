@@ -37,6 +37,7 @@ readonly PERSONAL_DIR="$HOME/personal"
 # Stow packages to symlink into $HOME. Each name must match a directory in $DOTFILES_DIR.
 readonly STOW_PACKAGES=(
     bash
+    claude
     hypr
     nvim
     waybar
