@@ -13,6 +13,7 @@ IFS=$'\n\t'
 usage() { grep '^#/' "$0" | cut -c4- ; exit 0 ; }
 expr "$*" : ".*--help" > /dev/null && usage
 
+# Logging and script structure inspired by https://blog.thibaut-rousseau.com/blog/shell-scripts-matter/
 readonly LOG_FILE="/tmp/$(basename "$0").log"
 info()    { echo "[INFO]    $*" | tee -a "$LOG_FILE" >&2 ; }
 warning() { echo "[WARNING] $*" | tee -a "$LOG_FILE" >&2 ; }
