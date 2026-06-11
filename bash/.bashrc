@@ -16,6 +16,8 @@ fi
 # Make an alias for invoking commands you use constantly
 # alias p='python'
 
+alias psync='~/personal/sync'
+
 export NVM_DIR="$HOME/.config/nvm"
 set -h  # nvm uses hash internally; omarchy disables it for mise, re-enable briefly
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

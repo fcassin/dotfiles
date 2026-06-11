@@ -31,6 +31,8 @@ backup() {
 readonly DOTFILES_REPO="https://github.com/fcassin/dotfiles.git"
 readonly DOTFILES_DIR="$HOME/dotfiles"
 readonly DESIRED_THEME="catppuccin"
+readonly PERSONAL_REPO="git@github.com:fcassin/personal.git"
+readonly PERSONAL_DIR="$HOME/personal"
 
 # Stow packages to symlink into $HOME. Each name must match a directory in $DOTFILES_DIR.
 readonly STOW_PACKAGES=(
@@ -169,6 +171,27 @@ step_discord() {
     "$DOTFILES_DIR/discord-update.sh"
 }
 
+# ── personal repo ─────────────────────────────────────────────────────────────
+step_personal() {
+    if [[ ! -d "$PERSONAL_DIR/.git" ]]; then
+        info "Cloning personal repo to $PERSONAL_DIR..."
+        git clone "$PERSONAL_REPO" "$PERSONAL_DIR"
+    else
+        info "Personal repo already cloned"
+    fi
+
+    local memory_dir="$HOME/.claude/projects/-home-francois-dotfiles/memory"
+    local memory_target="$PERSONAL_DIR/claude-memory"
+    if [[ -L "$memory_dir" && "$(readlink "$memory_dir")" == "$memory_target" ]]; then
+        info "Claude memory symlink already set"
+    else
+        info "Linking Claude memory..."
+        backup "$memory_dir"
+        mkdir -p "$(dirname "$memory_dir")"
+        ln -sfn "$memory_target" "$memory_dir"
+    fi
+}
+
 # ── neovim plugins ────────────────────────────────────────────────────────────
 step_nvim_plugins() {
     info "Syncing Neovim plugins..."
@@ -184,6 +207,7 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     step_theme
     step_background
     step_stow
+    step_personal
     step_discord
     step_nvim_plugins
 fi
