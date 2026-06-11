@@ -159,6 +159,13 @@ step_background() {
     info "Background set to $desired_bg"
 }
 
+# ── neovim plugins ────────────────────────────────────────────────────────────
+step_nvim_plugins() {
+    info "Syncing Neovim plugins..."
+    nvim --headless "+Lazy! sync" +qa
+    info "Neovim plugins synced"
+}
+
 if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     trap cleanup EXIT
     bootstrap_repo
@@ -168,4 +175,5 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     step_theme
     step_background
     step_stow
+    step_nvim_plugins
 fi
