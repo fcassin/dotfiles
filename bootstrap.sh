@@ -36,6 +36,7 @@ readonly DESIRED_THEME="catppuccin"
 readonly STOW_PACKAGES=(
     hypr
     nvim
+    waybar
 )
 
 cleanup() {
@@ -45,6 +46,9 @@ cleanup() {
         info "Restarting hypridle..."
         pkill hypridle 2>/dev/null || true
         hypridle >/dev/null 2>&1 &
+        info "Restarting waybar..."
+        pkill -9 -x waybar 2>/dev/null || true
+        setsid uwsm-app -- waybar >/dev/null 2>&1 &
     fi
 }
 
