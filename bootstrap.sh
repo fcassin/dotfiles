@@ -41,6 +41,9 @@ cleanup() {
     if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
         info "Reloading Hyprland..."
         hyprctl reload >/dev/null
+        info "Restarting hypridle..."
+        pkill hypridle 2>/dev/null || true
+        hypridle &
     fi
 }
 
