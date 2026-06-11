@@ -16,25 +16,16 @@ The bootstrap requires SSH and PGP keys to be present before it runs. It will ch
 
 ### SSH keys
 
-These are needed to authenticate with GitHub (cloning private repos, pushing).
+Generate a fresh key on the new machine — don't copy keys between machines. Each machine should have its own identity so a compromised machine only requires revoking one key.
 
-**Export from source machine:**
 ```bash
-cat ~/.ssh/id_ed25519      # private key — transfer securely (USB, encrypted channel)
-cat ~/.ssh/id_ed25519.pub  # public key
+ssh-keygen -t ed25519 -C "your-machine-name"
+cat ~/.ssh/id_ed25519.pub  # copy this output
 ```
 
-**Install on target machine:**
-```bash
-mkdir -p ~/.ssh && chmod 700 ~/.ssh
-nano ~/.ssh/id_ed25519     # paste private key, save
-chmod 600 ~/.ssh/id_ed25519
-nano ~/.ssh/id_ed25519.pub # paste public key, save
-chmod 644 ~/.ssh/id_ed25519.pub
-```
-
-If this key isn't already registered on GitHub, add it:
-GitHub → Settings → SSH and GPG keys → New SSH key → paste `id_ed25519.pub`.
+Then register the public key with each service that needs it:
+- GitHub → Settings → SSH and GPG keys → New SSH key
+- Any other services (servers, etc.)
 
 ### PGP keys
 
