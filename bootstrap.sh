@@ -34,13 +34,14 @@ readonly DESIRED_THEME="catppuccin"
 readonly PERSONAL_REPO="git@github.com:fcassin/personal.git"
 readonly PERSONAL_DIR="$HOME/personal"
 
-# Stow packages to symlink into $HOME. Each name must match a directory in $DOTFILES_DIR.
+# Stow packages and their target directories.
+# Format: "package:target" — target is relative to $HOME.
 readonly STOW_PACKAGES=(
-    bash
-    claude
-    hypr
-    nvim
-    waybar
+    "bash:."
+    "claude:.claude"
+    "hypr:.config/hypr"
+    "nvim:.config/nvim"
+    "waybar:.config/waybar"
 )
 
 cleanup() {
@@ -125,16 +126,20 @@ step_packages() {
 
 # ── stow ──────────────────────────────────────────────────────────────────────
 step_stow() {
-    local pkg src rel target
-    for pkg in "${STOW_PACKAGES[@]}"; do
-        info "Stowing: $pkg"
+    local entry pkg rel_target abs_target src rel dest
+    for entry in "${STOW_PACKAGES[@]}"; do
+        pkg="${entry%%:*}"
+        rel_target="${entry##*:}"
+        abs_target="$HOME/$rel_target"
+        info "Stowing: $pkg → ~/$rel_target"
+        mkdir -p "$abs_target"
         # Before stowing, move any conflicting regular files to .old so nothing is lost.
         while IFS= read -r src; do
             rel="${src#"$DOTFILES_DIR/$pkg/"}"
-            target="$HOME/$rel"
-            backup "$target"
+            dest="$abs_target/$rel"
+            backup "$dest"
         done < <(find "$DOTFILES_DIR/$pkg" -type f)
-        stow -d "$DOTFILES_DIR" -t "$HOME" --restow "$pkg"
+        stow -d "$DOTFILES_DIR" -t "$abs_target" --restow "$pkg"
     done
 }
 
