@@ -160,10 +160,10 @@ step_background() {
 if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     trap cleanup EXIT
     bootstrap_repo
-    check_prerequisites
     step_packages
     step_pgp_keys
-    step_stow
+    check_prerequisites
     step_theme
     step_background
+    step_stow
 fi
