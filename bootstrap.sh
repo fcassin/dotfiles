@@ -198,6 +198,16 @@ step_personal() {
     fi
 }
 
+# ── rtk ───────────────────────────────────────────────────────────────────────
+step_rtk() {
+    if [[ -x "$HOME/.local/bin/rtk" ]]; then
+        info "RTK already installed"
+        return
+    fi
+    info "Installing RTK..."
+    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+}
+
 # ── neovim plugins ────────────────────────────────────────────────────────────
 step_nvim_plugins() {
     info "Syncing Neovim plugins..."
@@ -215,5 +225,6 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     step_stow
     step_personal
     step_discord
+    step_rtk
     step_nvim_plugins
 fi
