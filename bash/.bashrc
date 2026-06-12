@@ -17,6 +17,7 @@ fi
 # alias p='python'
 
 alias psync='~/personal/sync'
+alias conventional='cat ~/.conventional-commits.md'
 
 export NVM_DIR="$HOME/.config/nvm"
 set -h  # nvm uses hash internally; omarchy disables it for mise, re-enable briefly
