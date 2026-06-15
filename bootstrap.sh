@@ -40,6 +40,7 @@ readonly STOW_PACKAGES=(
     "bash:."
     "claude:.claude"
     "hypr:.config/hypr"
+    "lazydocker:.config/lazydocker"
     "nvim:.config/nvim"
     "waybar:.config/waybar"
 )
