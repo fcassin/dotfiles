@@ -3,6 +3,3 @@
 -- Add any additional options here
 vim.opt.relativenumber = false
 vim.opt.colorcolumn = "80"
-
--- Disable built-in sqlcomplete which maps arrow keys in insert mode and flashes warnings
-vim.g.loaded_sql_completion = 1
