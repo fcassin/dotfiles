@@ -39,6 +39,7 @@ readonly PERSONAL_DIR="$HOME/personal"
 readonly STOW_PACKAGES=(
     "bash:."
     "claude:.claude"
+    "git:.config/git"
     "hypr:.config/hypr"
     "lazydocker:.config/lazydocker"
     "nvim:.config/nvim"
