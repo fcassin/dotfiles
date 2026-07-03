@@ -1,5 +1,4 @@
 {
-  "theme": "dark",
   "permissions": {
     "allow": [
       "Bash",
@@ -15,8 +14,8 @@
           {
             "type": "command",
             "command": "~/personal/sync",
-            "statusMessage": "Syncing personal notes...",
-            "timeout": 30
+            "timeout": 30,
+            "statusMessage": "Syncing personal notes..."
           }
         ]
       }
@@ -32,5 +31,8 @@
         ]
       }
     ]
-  }
+  },
+  "effortLevel": "medium",
+  "tui": "fullscreen",
+  "theme": "dark"
 }
