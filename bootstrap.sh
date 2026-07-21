@@ -170,6 +170,12 @@ step_background() {
     omarchy-theme-bg-set "$desired_bg"
 }
 
+# ── browser policies ──────────────────────────────────────────────────────────
+# Strip Omarchy's enterprise-policy dirs so browsers stop reporting as "managed".
+step_browser_unmanage() {
+    "$DOTFILES_DIR/browser-unmanage.sh"
+}
+
 # ── discord ───────────────────────────────────────────────────────────────────
 step_discord() {
     if [[ -x "/opt/Discord/discord" ]]; then
@@ -224,6 +230,7 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     check_prerequisites
     step_theme
     step_background
+    step_browser_unmanage
     step_stow
     step_personal
     step_discord
