@@ -22,10 +22,17 @@ fatal()   { echo "[FATAL]   $*" | tee -a "$LOG_FILE" >&2 ; exit 1 ; }
 
 backup() {
     local target="$1"
-    if [[ -e "$target" && ! -L "$target" ]]; then
-        warning "Backing up: $target → $target.old"
-        mv "$target" "$target.old"
-    fi
+    [[ -e "$target" ]] || return 0
+    [[ -L "$target" ]] && return 0
+    # stow folds directories: ~/.config/nvim/after can be a symlink to the repo,
+    # making ~/.config/nvim/after/ftplugin/sql.vim a real file that lives in the
+    # repo. Moving it would rename our own tracked source out from under stow.
+    local resolved repo
+    resolved="$(readlink -f "$target")"
+    repo="$(readlink -f "$DOTFILES_DIR")"
+    [[ "$resolved" == "$repo"/* ]] && return 0
+    warning "Backing up: $target → $target.old"
+    mv "$target" "$target.old"
 }
 
 readonly DOTFILES_REPO="https://github.com/fcassin/dotfiles.git"
