@@ -7,6 +7,7 @@
       "WebSearch"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "SessionEnd": [
       {
@@ -31,6 +32,10 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "effortLevel": "medium",
   "tui": "fullscreen",
