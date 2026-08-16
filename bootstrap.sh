@@ -45,7 +45,6 @@ readonly PERSONAL_DIR="$HOME/personal"
 # Format: "package:target" — target is relative to $HOME.
 readonly STOW_PACKAGES=(
     "bash:."
-    "claude:.claude"
     "git:.config/git"
     "hypr:.config/hypr"
     "lazydocker:.config/lazydocker"
@@ -151,6 +150,36 @@ step_stow() {
     done
 }
 
+# ── claude settings ───────────────────────────────────────────────────────────
+# ~/.claude/settings.json is NOT stowed. Claude Code writes to it itself —
+# /auto-mode-setup output, dialog acknowledgements, /config toggles — and a
+# symlink would land all of that in this public repo. Instead the file stays
+# machine-owned and we merge our tracked overrides on top of it.
+#
+# jq's `*` merges objects recursively and replaces arrays, so keys we declare
+# win while machine-generated ones (autoMode, skipDangerousModePermissionPrompt)
+# are preserved. Note the merge is additive: removing a key here does not remove
+# it from an already-provisioned machine.
+step_claude_settings() {
+    local live="$HOME/.claude/settings.json"
+    local overrides="$DOTFILES_DIR/claude/settings.overrides.json"
+    local tmp
+
+    info "Merging Claude settings overrides..."
+    mkdir -p "$(dirname "$live")"
+    # Drop the pre-merge stow symlink if it's still there.
+    [[ -L "$live" ]] && rm "$live"
+    [[ -f "$live" ]] || echo '{}' > "$live"
+
+    tmp="$(mktemp)"
+    if jq -s '.[0] * .[1]' "$live" "$overrides" > "$tmp"; then
+        mv "$tmp" "$live"
+    else
+        rm -f "$tmp"
+        fatal "Failed to merge Claude settings — is $live valid JSON?"
+    fi
+}
+
 # ── theme ─────────────────────────────────────────────────────────────────────
 step_theme() {
     local current
@@ -239,6 +268,7 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     step_background
     step_browser_unmanage
     step_stow
+    step_claude_settings
     step_personal
     step_discord
     step_rtk

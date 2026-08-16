@@ -54,7 +54,26 @@ gpg --export-secret-keys --armor KEY_ID > ~/pgp-work.asc
 - Sets the Catppuccin theme via `omarchy theme set`
 - Sets the desktop background
 - Stows all packages into their respective target directories
+- Merges `claude/settings.overrides.json` into `~/.claude/settings.json`
 - Clones `~/personal` and symlinks `~/.claude/projects/` into it
+
+## Claude Code settings
+
+`~/.claude/settings.json` is deliberately **not** stowed. Claude Code writes to
+it itself — `/auto-mode-setup` output, dialog acknowledgements, `/config`
+toggles — and a symlink would land all of that in this public repo.
+
+Instead the live file stays machine-owned and untracked, and bootstrap merges
+`claude/settings.overrides.json` on top of it with `jq -s '.[0] * .[1]'`. That
+merges objects recursively and replaces arrays, so tracked keys win while
+machine-generated ones (`autoMode`, `skipDangerousModePermissionPrompt`) are
+preserved.
+
+Tracked: `permissions`, `model`, `hooks`, `enabledPlugins`, `effortLevel`,
+`tui`, `theme`. Anything else belongs to the machine.
+
+Note the merge is additive — removing a key from the overrides file does not
+remove it from an already-provisioned machine.
 
 ## Post-bootstrap steps
 
@@ -75,7 +94,6 @@ Each package is stowed directly into its target — no nested `.config/` paths i
 | Package      | Target                  | What it manages                        |
 |--------------|-------------------------|----------------------------------------|
 | `bash`       | `~/`                    | `.bashrc` — nvm, pnpm, ssh-agent       |
-| `claude`     | `~/.claude/`            | `settings.json` — theme, hooks         |
 | `git`        | `~/.config/git/`        | git config, GPG commit signing         |
 | `hypr`       | `~/.config/hypr/`       | Hyprland WM config (Lua)               |
 | `lazydocker` | `~/.config/lazydocker/` | lazydocker config                      |
