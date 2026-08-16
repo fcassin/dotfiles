@@ -39,5 +39,6 @@
   },
   "effortLevel": "medium",
   "tui": "fullscreen",
-  "theme": "dark"
+  "theme": "dark",
+  "skipDangerousModePermissionPrompt": true
 }

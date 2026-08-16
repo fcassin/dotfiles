@@ -51,7 +51,7 @@ gpg --export-secret-keys --armor KEY_ID > ~/pgp-work.asc
 ## What the bootstrap does
 
 - Checks SSH and PGP keys are present (fails with instructions if not)
-- Sets the Catppuccin theme via `omarchy-theme-set`
+- Sets the Catppuccin theme via `omarchy theme set`
 - Sets the desktop background
 - Stows all packages into their respective target directories
 - Clones `~/personal` and symlinks `~/.claude/projects/` into it
@@ -72,10 +72,20 @@ gopass clone git@github.com:PlakarKorp/team-secrets.git team-secrets
 
 Each package is stowed directly into its target — no nested `.config/` paths in the repo.
 
-| Package   | Target               | What it manages                      |
-|-----------|----------------------|--------------------------------------|
-| `bash`    | `~/`                 | `.bashrc` — nvm, pnpm, ssh-agent     |
-| `claude`  | `~/.claude/`         | `settings.json` — theme, hooks       |
-| `hypr`    | `~/.config/hypr/`    | Hyprland WM config                   |
-| `nvim`    | `~/.config/nvim/`    | Neovim / LazyVim config              |
-| `waybar`  | `~/.config/waybar/`  | Status bar config                    |
+| Package      | Target                  | What it manages                        |
+|--------------|-------------------------|----------------------------------------|
+| `bash`       | `~/`                    | `.bashrc` — nvm, pnpm, ssh-agent       |
+| `claude`     | `~/.claude/`            | `settings.json` — theme, hooks         |
+| `git`        | `~/.config/git/`        | git config, GPG commit signing         |
+| `hypr`       | `~/.config/hypr/`       | Hyprland WM config (Lua)               |
+| `lazydocker` | `~/.config/lazydocker/` | lazydocker config                      |
+| `nvim`       | `~/.config/nvim/`       | Neovim / LazyVim config                |
+| `omarchy`    | `~/.config/omarchy/`    | `shell.json` — bar, idle/lock          |
+
+## Omarchy Quattro migration
+
+Omarchy 4 replaced Waybar and hypridle with the Quickshell-based Omarchy shell,
+and moved Hyprland config from `.conf` to `.lua`. The pre-Quattro files are kept
+unstowed under [`legacy/`](legacy/) alongside a
+[migration checklist](legacy/MIGRATION.md) tracking what is ported and what is
+still outstanding.

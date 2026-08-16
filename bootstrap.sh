@@ -50,19 +50,18 @@ readonly STOW_PACKAGES=(
     "hypr:.config/hypr"
     "lazydocker:.config/lazydocker"
     "nvim:.config/nvim"
-    "waybar:.config/waybar"
+    "omarchy:.config/omarchy"
 )
 
 cleanup() {
     if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
         info "Reloading hyprland..."
         hyprctl reload >/dev/null
-        info "Restarting hypridle..."
-        pkill hypridle 2>/dev/null || true
-        hypridle >/dev/null 2>&1 &
-        info "Restarting waybar..."
-        pkill -9 -x waybar 2>/dev/null || true
-        setsid uwsm-app -- waybar >/dev/null 2>&1 &
+        # Quattro: waybar and hypridle are gone. The bar, notifications and idle
+        # handling all live in the Omarchy shell, which hot-reloads shell.json
+        # on save — restart only to pick up newly stowed plugin code.
+        info "Restarting omarchy shell..."
+        omarchy restart shell >/dev/null 2>&1 || true
     fi
 }
 
@@ -155,26 +154,27 @@ step_stow() {
 # ── theme ─────────────────────────────────────────────────────────────────────
 step_theme() {
     local current
-    current="$(cat ~/.config/omarchy/current/theme.name 2>/dev/null || echo "")"
+    # Quattro moved theme state from ~/.config/omarchy to ~/.local/state/omarchy.
+    current="$(cat ~/.local/state/omarchy/current/theme.name 2>/dev/null || echo "")"
     if [[ "$current" == "$DESIRED_THEME" ]]; then
         info "Theme already set to $DESIRED_THEME"
         return
     fi
     info "Setting theme: $DESIRED_THEME"
-    omarchy-theme-set "$DESIRED_THEME"
+    omarchy theme set "$DESIRED_THEME"
 }
 
 # ── background ────────────────────────────────────────────────────────────────
 step_background() {
     local desired_bg current_bg
     desired_bg="$(realpath "$DOTFILES_DIR/backgrounds/nice-blue-background.png")"
-    current_bg="$(readlink -f ~/.config/omarchy/current/background 2>/dev/null || echo "")"
+    current_bg="$(readlink -f ~/.local/state/omarchy/current/background 2>/dev/null || echo "")"
     if [[ "$current_bg" == "$desired_bg" ]]; then
         info "Background already set"
         return
     fi
     info "Setting background..."
-    omarchy-theme-bg-set "$desired_bg"
+    omarchy theme bg set "$desired_bg"
 }
 
 # ── browser policies ──────────────────────────────────────────────────────────
