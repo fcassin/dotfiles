@@ -1,0 +1,6 @@
+[Unit]
+Description=Block/unblock distracting sites in /etc/hosts
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/site-blocker.sh

@@ -252,6 +252,41 @@ step_rtk() {
     curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 }
 
+# ── site blocker ──────────────────────────────────────────────────────────────
+# Blocks a fixed site list on weekdays, 09:00-12:00 and 14:00-18:00.
+step_site_blocker() {
+    local src="$DOTFILES_DIR/systemd"
+    local script="/usr/local/bin/site-blocker.sh"
+    local service="/etc/systemd/system/site-blocker.service"
+    local timer="/etc/systemd/system/site-blocker.timer"
+
+    # These are copies, not symlinks: /home is a separate mount, and systemd
+    # reaches timers.target before it mounts /home. A unit symlinked into the
+    # dotfiles is unreadable at that point, and systemd caches the failure for
+    # the whole boot. Re-run this script after you edit the unit files.
+    if cmp -s "$src/site-blocker.sh" "$script" &&
+        cmp -s "$src/site-blocker.service" "$service" &&
+        cmp -s "$src/site-blocker.timer" "$timer" &&
+        systemctl is-enabled --quiet site-blocker.timer 2>/dev/null; then
+        info "Site blocker already installed"
+        return
+    fi
+
+    info "Installing site blocker..."
+    # An earlier version symlinked these. install(1) would follow the symlink
+    # and write back into the dotfiles, so drop the old links first. The
+    # timers.target.wants link also points at the dotfiles, and enable(1) leaves
+    # an existing one alone, so remove it too.
+    sudo rm -f "$script" "$service" "$timer" \
+        /etc/systemd/system/timers.target.wants/site-blocker.timer
+    sudo install -m 755 "$src/site-blocker.sh" "$script"
+    sudo install -m 644 "$src/site-blocker.service" "$service"
+    sudo install -m 644 "$src/site-blocker.timer" "$timer"
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now site-blocker.timer
+    sudo systemctl start site-blocker.service
+}
+
 # ── neovim plugins ────────────────────────────────────────────────────────────
 step_nvim_plugins() {
     info "Syncing Neovim plugins..."
@@ -272,5 +307,6 @@ if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
     step_personal
     step_discord
     step_rtk
+    step_site_blocker
     step_nvim_plugins
 fi

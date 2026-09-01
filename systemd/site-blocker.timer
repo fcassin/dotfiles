@@ -1,0 +1,13 @@
+[Unit]
+Description=Apply site-blocker schedule (transitions plus boot/wake correction)
+
+[Timer]
+OnCalendar=Mon..Fri 09:00
+OnCalendar=Mon..Fri 12:00
+OnCalendar=Mon..Fri 14:00
+OnCalendar=Mon..Fri 18:00
+OnBootSec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
