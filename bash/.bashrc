@@ -28,6 +28,10 @@ fi
 alias psync='~/personal/sync'
 alias conventional='cat ~/.conventional-commits.md'
 
+# mise holds back releases younger than 24h as a supply-chain guard. Waiting a
+# day for a claude or codex bump is not worth it here, so disable the delay.
+export MISE_MINIMUM_RELEASE_AGE=0
+
 export NVM_DIR="$HOME/.config/nvm"
 set -h  # nvm uses hash internally; omarchy disables it for mise, re-enable briefly
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
