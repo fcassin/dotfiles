@@ -48,6 +48,7 @@ readonly STOW_PACKAGES=(
     "git:.config/git"
     "hypr:.config/hypr"
     "lazydocker:.config/lazydocker"
+    "lazygit:.config/lazygit"
     "nvim:.config/nvim"
     "omarchy:.config/omarchy"
 )
