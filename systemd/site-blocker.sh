@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Blocks a fixed list of sites in /etc/hosts on weekdays, 09:00-12:00 and
-# 14:00-18:00. Outside those windows the sites stay reachable. Idempotent:
+# 14:00-17:00. Outside those windows the sites stay reachable. Idempotent:
 # safe to run at any time from a timer, at boot, or by hand.
 readonly HOSTS_FILE="/etc/hosts"
 readonly MARK_BEGIN="# site-blocker BEGIN"
@@ -24,7 +24,7 @@ is_blocked_now() {
     if [[ "$hour_min" -ge 900 && "$hour_min" -lt 1200 ]]; then
         return 0
     fi
-    if [[ "$hour_min" -ge 1400 && "$hour_min" -lt 1800 ]]; then
+    if [[ "$hour_min" -ge 1400 && "$hour_min" -lt 1700 ]]; then
         return 0
     fi
     return 1

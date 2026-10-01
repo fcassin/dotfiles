@@ -5,7 +5,7 @@ Description=Apply site-blocker schedule (transitions plus boot/wake correction)
 OnCalendar=Mon..Fri 09:00
 OnCalendar=Mon..Fri 12:00
 OnCalendar=Mon..Fri 14:00
-OnCalendar=Mon..Fri 18:00
+OnCalendar=Mon..Fri 17:00
 OnBootSec=1min
 Persistent=true
 

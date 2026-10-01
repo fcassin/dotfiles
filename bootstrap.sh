@@ -254,7 +254,7 @@ step_rtk() {
 }
 
 # ── site blocker ──────────────────────────────────────────────────────────────
-# Blocks a fixed site list on weekdays, 09:00-12:00 and 14:00-18:00.
+# Blocks a fixed site list on weekdays, 09:00-12:00 and 14:00-17:00.
 step_site_blocker() {
     local src="$DOTFILES_DIR/systemd"
     local script="/usr/local/bin/site-blocker.sh"
