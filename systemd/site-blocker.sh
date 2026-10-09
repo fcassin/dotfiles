@@ -10,7 +10,6 @@ readonly MARK_END="# site-blocker END"
 readonly SITES=(
     "www.lemonde.fr"
     "www.ouest-france.fr"
-    "www.youtube.com"
 )
 
 is_blocked_now() {
